@@ -1,11 +1,16 @@
 {
   "name": "random_koch",
-  "version": "1.0.0",
-  "description": "A small school project",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "author": "Sniper0141",
-  "license": "ISC"
+  "dependencies": {
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "14.0.4"
+  }
 }
