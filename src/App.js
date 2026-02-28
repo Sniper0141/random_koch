@@ -75,6 +75,11 @@ export default function App() {
 
         <br/>
 
+        Sterne vom Restaurant-Tester: 
+        <div style={{display: 'flex'}} id="stars"></div>
+
+        <br/>
+
         <button id='compose-button' onClick={buttonClick}>compose recipe</button>
       </div>
     </body>
@@ -102,6 +107,17 @@ function buttonClick(){
     const ingredientElement = document.createElement("td");
     ingredientElement.innerText = chosenIngredients[categories[i]];
     outputElement.appendChild(ingredientElement);
+  }
+
+  const starsOutput = document.getElementById("stars");
+  starsOutput.innerHTML = null;
+  
+  for(let i = 0; i < getStarsCount(chosenIngredients, preparationMethod); i++){
+    const starElement = document.createElement("img");
+    starElement.src = "star.png";
+    starElement.height = 20;
+    starElement.innerText = chosenIngredients[categories[i]];
+    starsOutput.appendChild(starElement);
   }
 }
 
@@ -140,4 +156,32 @@ function getFunnyName(chosenIngredients){
   }
 
   return name;
+}
+
+function getStarsCount(chosenIngredients, preparationMethod){
+  let starCount = 0;
+
+  if(chosenIngredients.vegetables.length >= 2 && chosenIngredients.vegetables.length <= 4){
+    starCount++;
+  }
+  if(chosenIngredients.fruits.length >= 1 && chosenIngredients.fruits.length <= 1){
+    starCount++;
+  }
+  if(chosenIngredients.meat.length === 1 | chosenIngredients.meatSubstitute.length === 1){
+    starCount++;
+  }
+  if(chosenIngredients.basicFood.length === 1){
+    starCount++;
+  }
+  if(chosenIngredients.dairyProductsAndEggs.length >= 0 && chosenIngredients.dairyProductsAndEggs.length <= 1){
+    starCount++;
+  }
+
+  if(preparationMethod === "roh"){
+    if(chosenIngredients.meat.length >= 1 || chosenIngredients.meatSubstitute.length >= 1){
+      starCount--;
+    }
+  }
+
+  return starCount;
 }
