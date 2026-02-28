@@ -6,18 +6,20 @@ const ingredients = {
   fruits: ["Äpfel", "Bananen", "Birnen"],
   dairyProductsAndEggs: ["Käse", "Crème Fraîche", "Butter", "Gebratene Eier"],
   meat: ["Rindfleisch", "Schweinefleisch", "Hühnchen"],
-  meatSubstitute: ["Tofu", "NoChicken"],
+  meatSubstitute: ["Tofu", "NoChicken", "Laborfleisch"],
   desserts: ["Eiscrème", "Baklava", "Schokolade"]
 }
+
+const categories = Object.keys(ingredients);
 
 const preparationMethods = ["kochen", "garen", "frittieren", "roh"];
 
 export default function App() {
-  const categories = Object.keys(ingredients);
 
-  const maxLength = Math.max(
+  const maxIngredientLength = Math.max(
     ...Object.values(ingredients).map(arr => arr.length)
   );
+  const maxLength = maxIngredientLength < preparationMethods.length ? preparationMethods.length : maxIngredientLength;
 
   return (
     <body>
@@ -35,8 +37,11 @@ export default function App() {
           </tr>
         </thead>
         <tbody>
+
           {Array.from({ length: maxLength }).map((_, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr>
+              <td>{preparationMethods[rowIndex]}</td>
+            
               {categories.map(category => (
                 <td key={category}>
                   {ingredients[category][rowIndex] || ""}
@@ -93,36 +98,45 @@ function buttonClick(){
   preparationMethodElement.innerText = preparationMethod;
   outputElement.appendChild(preparationMethodElement);
 
-  for(let i = 0; i < chosenIngredients.length; i++){
+  for(let i = 0; i < categories.length; i++){
     const ingredientElement = document.createElement("td");
-    ingredientElement.innerText = chosenIngredients[i];
+    ingredientElement.innerText = chosenIngredients[categories[i]];
     outputElement.appendChild(ingredientElement);
   }
 }
 
 function getRandomRecipe(){
-  const chosenIngredients = [
-    ingredients.basicFood[Math.floor(Math.random() * ingredients.basicFood.length)],
-    ingredients.vegetables[Math.floor(Math.random() * ingredients.vegetables.length)],
-    ingredients.fruits[Math.floor(Math.random() * ingredients.fruits.length)],
-    ingredients.dairyProductsAndEggs[Math.floor(Math.random() * ingredients.dairyProductsAndEggs.length)],
-    ingredients.meat[Math.floor(Math.random() * ingredients.meat.length)],
-    ingredients.meatSubstitute[Math.floor(Math.random() * ingredients.meatSubstitute.length)],
-    ingredients.desserts[Math.floor(Math.random() * ingredients.desserts.length)],
-  ];
+  const chosenIngredients = {
+    basicFood: getRandomIngredientsFromCategory(ingredients.basicFood),
+    vegetables: getRandomIngredientsFromCategory(ingredients.vegetables),
+    fruits: getRandomIngredientsFromCategory(ingredients.fruits),
+    dairyProductsAndEggs: getRandomIngredientsFromCategory(ingredients.dairyProductsAndEggs),
+    meat: getRandomIngredientsFromCategory(ingredients.meat),
+    meatSubstitute: getRandomIngredientsFromCategory(ingredients.meatSubstitute),
+    desserts: getRandomIngredientsFromCategory(ingredients.desserts),
+  };
 
   const preparationMethod = preparationMethods[Math.floor(Math.random() * preparationMethods.length)];
 
-  console.log(chosenIngredients);
   return {chosenIngredients: chosenIngredients, preparationMethod: preparationMethod};
 }
 
+function getRandomIngredientsFromCategory(categoryIngredients){
+  const randomAmount = Math.floor(Math.random() * categoryIngredients.length) + 1;
+  const shuffled = [...categoryIngredients].sort(() => Math.random() - 0.5);
+
+  return shuffled.slice(0, randomAmount);
+}
+
 function getFunnyName(chosenIngredients){
+
   let name = "";
 
-  for(let i = 0; i < chosenIngredients.length; i++){
-    name += chosenIngredients[i][0];
-    name += chosenIngredients[i][1];
+  for(let i = 0; i < categories.length; i++){
+    for(let j = 0; j < chosenIngredients[categories[i]].length; j++){
+      name += chosenIngredients[categories[i]][j][0];
+      name += chosenIngredients[categories[i]][j][1];
+    }
   }
 
   return name;
